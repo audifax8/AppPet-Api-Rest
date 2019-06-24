@@ -26,19 +26,21 @@ const createOne = (model, joiSchema) => async (req, res, next) => {
         if (isValidSchema.errors) return res.status(400).json(apiResponse(false, null, 0, isValidSchema.errors));
 
         const password = req.body.password;
+        const userName = req.body.userName.toLowerCase();
+        const email = req.body.email.toLowerCase();
         const guidId = uuid.v1();
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashedPassword = bcrypt.hashSync(password, salt);
 
         modelToValidate.id = guidId;
         modelToValidate.password = hashedPassword;
+        modelToValidate.userName = userName;
+        modelToValidate.email = email;
 
         const user = await model.create(modelToValidate);
-        console.log(user);
 
         return res.status(200).json(apiResponse(true, user, 1, null));
     } catch (e) {
-        console.log(e);
         next(e);
     }
 };

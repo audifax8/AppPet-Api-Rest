@@ -10,7 +10,7 @@ const login = joiSchema => async (req, res, next) => {
         const isValidSchema = Joi.validate(joiSchema, modelToValidate);
         if (isValidSchema.errors) return res.status(400).json(apiResponse(false, null, 0, isValidSchema.errors));
 
-        const userName = modelToValidate.userName;
+        const userName = modelToValidate.userName.toLowerCase();
         const password = modelToValidate.password;
 
         const userLoged = await user
@@ -38,7 +38,7 @@ const loginController = (joiSchema) => ({
 
 function joinUserAndToken(user, token) {
     const { _doc } = user;
-    const userLogued = { token: token, userName: _doc.userName, isAdmin: _doc.isAdmin, email: _doc.email, terms: _doc.terms };
+    const userLogued = { token: token, userName: _doc.userName, isAdmin: _doc.isAdmin, email: _doc.email, terms: _doc.terms, id: _doc.id };
     return userLogued;
 }
 
